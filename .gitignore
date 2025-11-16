@@ -44,3 +44,8 @@ dist/
 # Misc
 *.sqlite3
 *.db
+frontend/node_modules/
+node_modules/
+.env
+__pycache__/
+*.pyc
