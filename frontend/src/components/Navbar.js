@@ -20,6 +20,7 @@ export default function Navbar() {
             AI Health
           </Typography>
           <Box>
+            <Button color="inherit" component={Link} to="/dashboard" sx={{ mx: 1, fontWeight: 500 }}>Dashboard</Button>
             <Button color="inherit" component={Link} to="/predict" sx={{ mx: 1, fontWeight: 500 }}>Predict</Button>
             <Button color="inherit" component={Link} to="/diet" sx={{ mx: 1, fontWeight: 500 }}>Diet</Button>
             {isLoggedIn ? (

@@ -1,0 +1,46 @@
+node_modules/
+venv/
+.env
+.DS_Store
+__pycache__/
+*.pyc
+frontend/node_modules/
+backend/node_modules/
+ai_service/venv/
+build/
+dist/
+*.log
+*.sqlite3
+*.pkl
+*.db
+*.egg-info/
+coverage/
+*.swp
+*.swo
+*.bak
+# Node
+node_modules/
+.env
+.DS_Store
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# VSCode
+.vscode/
+
+# Mac
+.DS_Store
+
+# Logs
+*.log
+
+# Build
+build/
+dist/
+
+# Misc
+*.sqlite3
+*.db

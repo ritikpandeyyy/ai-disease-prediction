@@ -20,6 +20,7 @@ function auth(req, res, next) {
 const axios = require('axios');
 
 // POST /api/diet
+
 router.post('/', auth, async (req, res) => {
   try {
     // Expect disease in request body, else fallback to prediction
