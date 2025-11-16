@@ -1,198 +1,250 @@
-import React, { useState } from 'react';
+
+import React, { useState } from "react";
 import {
-  Container, Typography, Box, TextField, Button, Alert, List, ListItem,
-  Card, CardContent, Grid, Stack, Chip
-} from '@mui/material';
-import axios from 'axios';
-import { motion } from 'framer-motion';
-import EmojiFoodBeverageIcon from '@mui/icons-material/EmojiFoodBeverage';
-import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
+  Container,
+  Typography,
+  Box,
+  TextField,
+  Button,
+  Alert,
+  List,
+  ListItem,
+  Card,
+  CardContent,
+  Grid,
+  Stack,
+  Chip,
+  Divider,
+} from "@mui/material";
+import axios from "axios";
+import { motion } from "framer-motion";
+import EmojiFoodBeverageIcon from "@mui/icons-material/EmojiFoodBeverage";
+import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 
 export default function Diet() {
-  const [form, setForm] = useState({ age: '', gender: '', healthGoal: '' });
+  const [form, setForm] = useState({
+    age: "",
+    gender: "",
+    healthGoal: "",
+    dietPreference: "",
+    weight: "",
+    height: "",
+    disease: "",
+  });
+
   const [result, setResult] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
-  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setResult(null);
     try {
-      const res = await axios.post('http://localhost:5001/api/diet', form);
+      const res = await axios.post("http://localhost:5001/api/diet", form);
       setResult(res.data);
-    } catch {
-      setError('Failed to fetch recommendations');
+    } catch (err) {
+      setError("Failed to fetch diet plan");
     }
   };
 
   return (
     <Box
       sx={{
-        minHeight: '100vh',
+        minHeight: "100vh",
         py: 8,
-        background: 'linear-gradient(135deg, #d7e9f7 0%, #f0f7ff 100%)',
+        background: "linear-gradient(135deg, #d7e9f7 0%, #f0f7ff 100%)",
       }}
     >
       <Container maxWidth="md">
-
-        {/* HEADER */}
-        <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+        <Typography
+          variant="h3"
+          align="center"
+          fontWeight={800}
+          mb={4}
+          color="#1f4b77"
         >
-          <Typography variant="h3" fontWeight={800} align="center" color="#1f4b77" mb={2}>
-            Personalized Diet Plan
-          </Typography>
-          <Typography variant="subtitle1" align="center" color="text.secondary" mb={5}>
-            Enter your details to generate an AI-powered healthy diet recommendation.
-          </Typography>
-        </motion.div>
+          Advanced Diet Recommendation System
+        </Typography>
 
-        {/* MAIN CARD */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <Card
-            elevation={5}
-            sx={{
-              borderRadius: 5,
-              overflow: 'hidden',
-              backdropFilter: 'blur(10px)',
-              background: 'rgba(255,255,255,0.8)',
-            }}
-          >
-            <Grid container>
+        {/* Main Card */}
+        <Card elevation={6} sx={{ borderRadius: 5 }}>
+          <Grid container>
+            {/* LEFT PANEL */}
+            <Grid
+              item
+              xs={12}
+              md={5}
+              sx={{
+                background: "linear-gradient(135deg, #84d8f6 0%, #6db3f2 100%)",
+                p: 4,
+                color: "white",
+              }}
+            >
+              <EmojiFoodBeverageIcon sx={{ fontSize: 90 }} />
+              <Typography variant="h5" fontWeight={700} mt={2}>
+                Smart, Healthy, AI-Based Diet!
+              </Typography>
+              <Typography variant="body1" mt={1}>
+                Get weekly diet plans, calorie & macro breakdowns, and
+                disease-safe food alerts.
+              </Typography>
+            </Grid>
 
-              {/* LEFT SIDE */}
-              <Grid
-                item
-                xs={12}
-                md={5}
-                sx={{
-                  background: 'linear-gradient(135deg, #84d8f6 0%, #6db3f2 100%)',
-                  p: 4,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  textAlign: 'center',
-                }}
-              >
-                <motion.div
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ repeat: Infinity, duration: 3 }}
-                >
-                  <EmojiFoodBeverageIcon sx={{ fontSize: 90, opacity: 0.9 }} />
-                </motion.div>
+            {/* RIGHT PANEL */}
+            <Grid item xs={12} md={7}>
+              <CardContent sx={{ p: 4 }}>
+                <form onSubmit={handleSubmit}>
+                  <Stack spacing={2}>
+                    <TextField
+                      label="Age"
+                      name="age"
+                      value={form.age}
+                      onChange={handleChange}
+                      fullWidth
+                    />
 
-                <Typography variant="h4" fontWeight={700} mt={2}>
-                  Eat Smart, Live Better
-                </Typography>
-                <Typography variant="body1" sx={{ mt: 1, opacity: 0.9 }}>
-                  AI crafts your perfect diet based on habits and goals.
-                </Typography>
-              </Grid>
+                    <TextField
+                      label="Gender"
+                      name="gender"
+                      value={form.gender}
+                      onChange={handleChange}
+                      fullWidth
+                    />
 
-              {/* RIGHT SIDE (FORM) */}
-              <Grid item xs={12} md={7}>
-                <CardContent sx={{ p: 4 }}>
-                  <form onSubmit={handleSubmit}>
-                    <Stack spacing={3}>
-                      <TextField
-                        label="Age"
-                        name="age"
-                        value={form.age}
-                        onChange={handleChange}
-                        fullWidth
-                        variant="outlined"
-                      />
-                      <TextField
-                        label="Gender"
-                        name="gender"
-                        value={form.gender}
-                        onChange={handleChange}
-                        fullWidth
-                        variant="outlined"
-                        helperText="e.g. Male, Female, Other"
-                      />
-                      <TextField
-                        label="Health Goal"
-                        name="healthGoal"
-                        value={form.healthGoal}
-                        onChange={handleChange}
-                        fullWidth
-                        variant="outlined"
-                        helperText="e.g. weight loss, muscle gain, diabetes"
-                      />
+                    <TextField
+                      label="Height (cm)"
+                      name="height"
+                      value={form.height}
+                      onChange={handleChange}
+                      fullWidth
+                    />
 
-                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
-                        <Button
-                          type="submit"
-                          variant="contained"
-                          size="large"
-                          fullWidth
+                    <TextField
+                      label="Weight (kg)"
+                      name="weight"
+                      value={form.weight}
+                      onChange={handleChange}
+                      fullWidth
+                    />
+
+                    <TextField
+                      label="Disease (Optional)"
+                      name="disease"
+                      value={form.disease}
+                      onChange={handleChange}
+                      helperText="e.g. diabetes, hypertension"
+                      fullWidth
+                    />
+
+                    <TextField
+                      label="Health Goal"
+                      name="healthGoal"
+                      value={form.healthGoal}
+                      onChange={handleChange}
+                      helperText="weight loss, gain, maintenance"
+                      fullWidth
+                    />
+
+                    <TextField
+                      label="Diet Preference"
+                      name="dietPreference"
+                      value={form.dietPreference}
+                      onChange={handleChange}
+                      helperText="veg / non-veg / vegan"
+                      fullWidth
+                    />
+
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      fullWidth
+                      sx={{
+                        py: 1.5,
+                        borderRadius: 3,
+                        background:
+                          "linear-gradient(90deg, #4facfe 0%, #00f2fe 100%)",
+                      }}
+                    >
+                      Generate Diet Plan
+                    </Button>
+                  </Stack>
+                </form>
+
+                {error && (
+                  <Alert severity="error" sx={{ mt: 3 }}>
+                    {error}
+                  </Alert>
+                )}
+
+                {/* SHOW RESULT */}
+                {result && (
+                  <Box mt={4}>
+                    <Alert severity="success">
+                      <Typography variant="h6" fontWeight={700}>
+                        Daily Calorie Target: {result.tdee} kcal
+                      </Typography>
+
+                      <Typography variant="h6" mt={2}>
+                        Macros:
+                      </Typography>
+                      <List>
+                        <ListItem>Protein: {result.macros.protein_g}g</ListItem>
+                        <ListItem>Carbs: {result.macros.carbs_g}g</ListItem>
+                        <ListItem>Fat: {result.macros.fat_g}g</ListItem>
+                      </List>
+
+                      <Divider sx={{ my: 2 }} />
+
+                      <Typography variant="h6">Weekly Meal Plan:</Typography>
+                      {result.week.map((day) => (
+                        <Box
+                          key={day.day}
                           sx={{
-                            py: 1.5,
-                            borderRadius: 3,
-                            background: 'linear-gradient(90deg, #4facfe 0%, #00f2fe 100%)',
-                            fontWeight: 700,
-                            letterSpacing: 0.5,
+                            p: 2,
+                            mt: 2,
+                            borderRadius: 2,
+                            background: "#e8fdf1",
                           }}
                         >
-                          Get My Diet Plan
-                        </Button>
-                      </motion.div>
-                    </Stack>
-                  </form>
-
-                  {/* ERROR */}
-                  {error && (
-                    <Alert severity="error" sx={{ mt: 3 }}>
-                      {error}
-                    </Alert>
-                  )}
-
-                  {/* RESULT */}
-                  {result && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6 }}
-                    >
-                      <Alert
-                        severity="success"
-                        sx={{ mt: 4, borderRadius: 3, background: '#e8fdf1' }}
-                        icon={<RestaurantMenuIcon />}
-                      >
-                        <Typography variant="h6" fontWeight={600} mb={1}>
-                          Your Recommendations:
-                        </Typography>
-                        <List>
-                          {result.recommendations.map((rec, idx) => (
-                            <ListItem key={idx}>
-                              <Chip
-                                label={rec}
-                                color="primary"
-                                sx={{ background: '#6dd5ed', color: 'white', fontWeight: 600 }}
-                              />
-                            </ListItem>
+                          <Typography fontWeight={700}>Day {day.day}</Typography>
+                          {Object.entries(day.plan).map(([meal, d]) => (
+                            <Box key={meal} sx={{ mt: 1 }}>
+                              <Typography fontWeight={600}>{meal}:</Typography>
+                              {d.items.map((food, i) => (
+                                <Chip
+                                  key={i}
+                                  label={food.name}
+                                  sx={{ mr: 1, mt: 1, background: "#6dd5ed", color: "white" }}
+                                />
+                              ))}
+                            </Box>
                           ))}
-                        </List>
-                      </Alert>
-                    </motion.div>
-                  )}
-                </CardContent>
-              </Grid>
 
+                          {/* Alerts */}
+                          {day.alerts.length > 0 && (
+                            <Alert severity="warning" sx={{ mt: 2 }}>
+                              <Typography fontWeight={700}>
+                                Food Restrictions:
+                              </Typography>
+                              {day.alerts.map((a, idx) => (
+                                <Typography key={idx}>
+                                  ⚠ {a.item} — {a.reason || a.disease}
+                                </Typography>
+                              ))}
+                            </Alert>
+                          )}
+                        </Box>
+                      ))}
+                    </Alert>
+                  </Box>
+                )}
+              </CardContent>
             </Grid>
-          </Card>
-        </motion.div>
+          </Grid>
+        </Card>
       </Container>
     </Box>
   );
