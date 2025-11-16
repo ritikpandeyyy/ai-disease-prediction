@@ -1,41 +1,69 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-  Container, Typography, Box, TextField, Button, Alert, Card,
-  CardContent, Grid, Stack, LinearProgress, Chip
-} from '@mui/material';
-import axios from 'axios';
-import { motion } from 'framer-motion';
-import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
+  Container,
+  Typography,
+  Box,
+  TextField,
+  Button,
+  Alert,
+  Card,
+  CardContent,
+  Grid,
+  Stack,
+  LinearProgress,
+  Chip,
+  Divider,
+  List,
+  ListItem,
+} from "@mui/material";
+import axios from "axios";
+import { motion } from "framer-motion";
+import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
+import MicIcon from "@mui/icons-material/Mic";
 
 export default function Predict() {
-  const [form, setForm] = useState({ age: '', gender: '', symptoms: '' });
+  const [form, setForm] = useState({ age: "", gender: "", symptoms: "" });
   const [result, setResult] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
-  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async e => {
+  // --------- VOICE TO TEXT ----------
+  const handleVoiceInput = () => {
+    const recognition = new window.webkitSpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.start();
+
+    recognition.onresult = function (event) {
+      const text = event.results[0][0].transcript;
+      setForm({ ...form, symptoms: text });
+    };
+  };
+
+  // --------- SUBMIT FORM ----------
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setResult(null);
+
     try {
-      const res = await axios.post('http://localhost:5001/api/predict', form);
+      const res = await axios.post("http://localhost:5001/api/predict", form);
       setResult(res.data);
     } catch {
-      setError('Prediction failed');
+      setError("Prediction failed");
     }
   };
 
   return (
     <Box
       sx={{
-        minHeight: '100vh',
+        minHeight: "100vh",
         py: 8,
-        background: 'linear-gradient(135deg, #d7e9f7 0%, #ecf2ff 100%)',
+        background: "linear-gradient(135deg, #d7e9f7 0%, #ecf2ff 100%)",
       }}
     >
       <Container maxWidth="md">
-
         {/* HEADER */}
         <motion.div
           initial={{ opacity: 0, y: 25 }}
@@ -58,182 +86,194 @@ export default function Predict() {
             color="text.secondary"
             mb={5}
           >
-            Enter your symptoms and details to get an instant prediction.
+            Enter your symptoms and get multi-disease prediction, confidence,
+            next steps, and doctor recommendations.
           </Typography>
         </motion.div>
 
         {/* MAIN CARD */}
-        <motion.div
-          initial={{ opacity: 0, y: 35 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <Card
-            elevation={5}
-            sx={{
-              borderRadius: 5,
-              overflow: 'hidden',
-              backdropFilter: 'blur(10px)',
-              background: 'rgba(255,255,255,0.85)',
-            }}
-          >
-            <Grid container>
+        <Card elevation={5} sx={{ borderRadius: 5 }}>
+          <Grid container>
+            {/* LEFT SECTION */}
+            <Grid
+              item
+              xs={12}
+              md={5}
+              sx={{
+                background: "linear-gradient(135deg, #5fb2ff 0%, #2196f3 100%)",
+                p: 4,
+                color: "white",
+                textAlign: "center",
+              }}
+            >
+              <HealthAndSafetyIcon sx={{ fontSize: 90 }} />
+              <Typography variant="h4" fontWeight={700} mt={2}>
+                Smart Health Analysis
+              </Typography>
+              <Typography variant="body2" mt={1} sx={{ opacity: 0.9 }}>
+                Accurate AI predictions based on medical datasets.
+              </Typography>
+            </Grid>
 
-              {/* LEFT SIDE */}
-              <Grid
-                item
-                xs={12}
-                md={5}
-                sx={{
-                  background: 'linear-gradient(135deg, #5fb2ff 0%, #2196f3 100%)',
-                  p: 4,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  textAlign: 'center',
-                }}
-              >
-                <motion.div
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ repeat: Infinity, duration: 3 }}
-                >
-                  <HealthAndSafetyIcon sx={{ fontSize: 95, opacity: 0.95 }} />
-                </motion.div>
+            {/* RIGHT SECTION */}
+            <Grid item xs={12} md={7}>
+              <CardContent sx={{ p: 4 }}>
+                <form onSubmit={handleSubmit}>
+                  <Stack spacing={3}>
+                    <TextField
+                      label="Age"
+                      name="age"
+                      value={form.age}
+                      onChange={handleChange}
+                      fullWidth
+                    />
+                    <TextField
+                      label="Gender"
+                      name="gender"
+                      value={form.gender}
+                      onChange={handleChange}
+                      fullWidth
+                    />
 
-                <Typography variant="h4" fontWeight={700} mt={2}>
-                  Smart Health Analysis
-                </Typography>
-
-                <Typography variant="body1" sx={{ mt: 1, opacity: 0.9 }}>
-                  Get quick and reliable AI-powered disease predictions.
-                </Typography>
-              </Grid>
-
-              {/* RIGHT SIDE (FORM) */}
-              <Grid item xs={12} md={7}>
-                <CardContent sx={{ p: 4 }}>
-
-                  <form onSubmit={handleSubmit}>
-                    <Stack spacing={3}>
+                    <Box sx={{ position: "relative" }}>
                       <TextField
-                        label="Age"
-                        name="age"
-                        value={form.age}
-                        onChange={handleChange}
-                        fullWidth
-                        variant="outlined"
-                      />
-
-                      <TextField
-                        label="Gender"
-                        name="gender"
-                        value={form.gender}
-                        onChange={handleChange}
-                        fullWidth
-                        helperText="e.g. Male, Female, Other"
-                        variant="outlined"
-                      />
-
-                      <TextField
-                        label="Symptoms (comma separated)"
+                        label="Symptoms"
                         name="symptoms"
                         value={form.symptoms}
                         onChange={handleChange}
                         fullWidth
-                        helperText="e.g. fever, cough, headache"
                         multiline
                         rows={2}
-                        variant="outlined"
                       />
 
-                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
-                        <Button
-                          type="submit"
-                          variant="contained"
-                          size="large"
-                          fullWidth
-                          sx={{
-                            py: 1.5,
-                            borderRadius: 3,
-                            background: 'linear-gradient(90deg, #4facfe 0%, #00f2fe 100%)',
-                            fontWeight: 700,
-                          }}
-                        >
-                          Predict
-                        </Button>
-                      </motion.div>
-                    </Stack>
-                  </form>
-
-                  {/* ERROR */}
-                  {error && (
-                    <Alert severity="error" sx={{ mt: 3 }}>
-                      {error}
-                    </Alert>
-                  )}
-
-                  {/* RESULT */}
-                  {result && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6 }}
-                    >
-                      <Card
-                        elevation={3}
+                      {/* VOICE BUTTON */}
+                      <Button
+                        variant="contained"
+                        onClick={handleVoiceInput}
                         sx={{
-                          mt: 4,
-                          p: 3,
-                          borderRadius: 4,
-                          background: '#e8f4ff',
+                          position: "absolute",
+                          right: 10,
+                          bottom: 10,
+                          borderRadius: "50%",
+                          minWidth: 50,
+                          background: "#2196f3",
                         }}
                       >
-                        <Stack spacing={2}>
-                          <Typography variant="h6" fontWeight={700}>
-                            Prediction Result:
-                          </Typography>
+                        <MicIcon />
+                      </Button>
+                    </Box>
 
+                    <motion.div whileHover={{ scale: 1.05 }}>
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        size="large"
+                        fullWidth
+                        sx={{
+                          py: 1.5,
+                          borderRadius: 3,
+                          background:
+                            "linear-gradient(90deg, #4facfe 0%, #00f2fe 100%)",
+                        }}
+                      >
+                        Predict
+                      </Button>
+                    </motion.div>
+                  </Stack>
+                </form>
+
+                {/* ERROR */}
+                {error && (
+                  <Alert severity="error" sx={{ mt: 3 }}>
+                    {error}
+                  </Alert>
+                )}
+
+                {/* RESULT */}
+                {result && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <Card sx={{ p: 3, mt: 4, borderRadius: 4 }}>
+                      <Typography variant="h6" fontWeight={700}>
+                        Top Predictions:
+                      </Typography>
+
+                      {/* TOP 3 Diseases */}
+                      {result.diseases.map((d, idx) => (
+                        <Box key={idx} sx={{ mt: 2 }}>
                           <Chip
-                            label={result.prediction}
+                            label={`${d.name} — ${(d.confidence * 100).toFixed(
+                              1
+                            )}%`}
                             color="primary"
                             sx={{
-                              fontSize: '15px',
+                              fontSize: 16,
                               fontWeight: 700,
-                              py: 1.2,
-                              background: '#2196f3',
-                              color: 'white',
+                              p: 1,
+                              background: "#2196f3",
+                              color: "white",
                             }}
                           />
-
-                          <Typography variant="body2" fontWeight={600}>
-                            Confidence Level:
-                          </Typography>
 
                           <LinearProgress
                             variant="determinate"
-                            value={result.confidence * 100}
-                            sx={{
-                              height: 10,
-                              borderRadius: 5,
-                            }}
+                            value={d.confidence * 100}
+                            sx={{ mt: 1, borderRadius: 5 }}
                           />
 
-                          <Typography fontWeight={600} align="right">
-                            {(result.confidence * 100).toFixed(1)}%
+                          <Typography
+                            variant="body2"
+                            mt={1}
+                            sx={{ fontStyle: "italic" }}
+                          >
+                            {d.reason}
                           </Typography>
-                        </Stack>
-                      </Card>
-                    </motion.div>
-                  )}
+                        </Box>
+                      ))}
 
-                </CardContent>
-              </Grid>
+                      <Divider sx={{ my: 3 }} />
 
+                      {/* DOCTOR SPECIALTY */}
+                      <Typography variant="h6" fontWeight={700}>
+                        Recommended Doctor:
+                      </Typography>
+                      <Chip
+                        label={result.doctor}
+                        color="success"
+                        sx={{ mt: 1, fontWeight: 700 }}
+                      />
+
+                      <Divider sx={{ my: 3 }} />
+
+                      {/* NEXT STEPS */}
+                      <Typography variant="h6" fontWeight={700}>
+                        Next Steps:
+                      </Typography>
+                      <List>
+                        {result.nextSteps.map((s, i) => (
+                          <ListItem key={i}>• {s}</ListItem>
+                        ))}
+                      </List>
+
+                      {/* Tests */}
+                      <Typography variant="h6" fontWeight={700}>
+                        Suggested Tests:
+                      </Typography>
+                      <List>
+                        {result.tests.map((t, i) => (
+                          <ListItem key={i}>• {t}</ListItem>
+                        ))}
+                      </List>
+                    </Card>
+                  </motion.div>
+                )}
+              </CardContent>
             </Grid>
-          </Card>
-        </motion.div>
+          </Grid>
+        </Card>
       </Container>
     </Box>
   );
