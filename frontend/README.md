@@ -7,3 +7,4 @@ React app for AI Disease Prediction and Diet Recommendation.
 Drink more water
 Exercise
 Calories intake
+Ai voice assistant
