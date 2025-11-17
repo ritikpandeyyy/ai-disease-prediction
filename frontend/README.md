@@ -6,3 +6,4 @@ React app for AI Disease Prediction and Diet Recommendation.
 - Pages: Auth, Disease Prediction, Diet Recommendation
 Drink more water
 Exercise
+Calories intake
